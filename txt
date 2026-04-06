@@ -1,0 +1,70 @@
+function Configuration() {
+  // 1. Define states for subjects and grades
+  const [subjects, setSubjects] = useState([]);
+  const [grades, setGrades] = useState([]);
+
+  // 2. Default grade data structure
+  const defaultGrades = [
+    { name: "Failed", min: 0, label: "Below 35%", class: "badge-failed" },
+    { name: "Second Class", min: 35, label: "35% and above", class: "badge-second" },
+    { name: "First Class", min: 60, label: "60% and above", class: "badge-first" },
+    { name: "Merit", min: 85, label: "85% and above", class: "badge-merit" },
+  ];
+
+  useEffect(() => {
+    // Load subjects
+    const savedSubjects = localStorage.getItem("subjects");
+    if (savedSubjects) setSubjects(JSON.parse(savedSubjects));
+
+    // 3. Load Grades from localStorage OR Save defaults if empty
+    const savedGrades = localStorage.getItem("grades");
+    
+    if (savedGrades) {
+      // If grades exist, load them
+      setGrades(JSON.parse(savedGrades));
+    } else {
+      // If no grades found, save the defaults for the first time
+      localStorage.setItem("grades", JSON.stringify(defaultGrades));
+      setGrades(defaultGrades);
+    }
+  }, []);
+
+  return (
+    <div className="config-container">
+      {/* ... Your Subjects Table here ... */}
+
+      {/* 4. Static Grade Thresholds UI Display */}
+      <div className="grades-card">
+        <h3>Grade Thresholds</h3>
+        <p className="subtext">Grade is calculated on overall percentage across all subjects</p>
+        
+        <table className="grades-table">
+          <thead>
+            <tr>
+              <th>Grade</th>
+              <th>Minimum %</th>
+            </tr>
+          </thead>
+          <tbody>
+            {grades.map((grade, index) => (
+              <tr key={index}>
+                <td>
+                  <span className={`grade-badge ${grade.class}`}>
+                    {grade.name}
+                  </span>
+                </td>
+                <td>{grade.label}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        
+        <div className="info-box">
+          <code>localStorage key: grades</code> — stores array of grade thresholds
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Configuration;
