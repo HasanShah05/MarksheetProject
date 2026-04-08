@@ -214,11 +214,12 @@ function Configuration() {
                 />
               </div>
             </div>
-            <button onClick={handleAddSubject} >Add Subject</button>
+            <Button variant="light" color="rgba(255, 239, 181, 1)" radius="xl" onClick={handleAddSubject}>Add Subject</Button>
           </div>
         </div>
       </Modal>
-      <button onClick={open} style={{backgroundColor:'lavender'}}>Add Subject</button>
+      <br />
+      <Button variant="light" color="rgba(255, 239, 181, 1)" radius="xl" onClick={open}>Add New Subject</Button>
       <div className="grades-card">
         <h3>Grade Thresholds</h3>
         <p className="subtext">

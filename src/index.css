@@ -40,7 +40,9 @@ a {
   color: #2d2d2d;
 }
 
-.config-table {
+.config-table,
+.std-table,
+.marks-table {
   width: 100%;
   border-collapse: collapse;
   background: white;
@@ -65,40 +67,45 @@ a {
   color: #888;
 }
 
-.config-table td {
+.config-table th,
+.std-table th,
+.marks-table th {
+  padding: 14px;
+  font-weight: 600;
+  color: #555;
+  text-align: left;
+  font-size: 14px;
+}
+
+.config-table td,
+.std-table td {
   padding: 14px;
   font-size: 14px;
   color: #333;
 }
 
-.config-table tbody tr {
+.config-table tbody tr,
+.std-table tbody tr,
+.marks-table tbody, tr {
   border-top: 1px solid #eee;
 }
 
-.config-table tbody tr:hover {
+.config-table tbody tr:hover,
+.std-table tbody tr:hover,
+.marks-table tbody tr:hover{
   background: #f9fafb;
 }
 
-.config-table td:nth-child(2) {
+.config-table td:nth-child(2),
+.std-table td:nth-child(2),
+.marks-table td:nth-child(2) {
   font-weight: 600;
 }
 
 .config-table th,
-.config-table td {
+.config-table td,
+.marks-table td {
   border: none;
-}
-
-button {
-  margin-top: 16px;
-  padding: 10px 16px;
-  background: #e9ecef;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #dee2e6;
 }
 
 .config-table thead tr:first-child th:nth-child(3),
@@ -160,23 +167,6 @@ button:hover {
   display: flex;
   flex-direction: column;
   gap: 6px;
-}
-
-.form-cointainer button {
-  width: fit-content;
-  padding: 12px 18px;
-  border: none;
-  border-radius: 8px;
-  background: #339af0;
-  color: white;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.form-cointainer button:hover {
-  background: #228be6;
 }
 
 .form-cointainer .secondary-btn {
@@ -260,4 +250,84 @@ button:hover {
 
 .edit-btn:hover {
   background: #dee2e6;
+}
+/* MODAL FORM CONTAINER */
+.std-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 10px 5px;
+}
+
+/* EACH FIELD */
+.std-form > div > div {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* LABEL */
+.std-form label {
+  width: 150px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* INPUT */
+.std-form input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #dcdfe3;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s;
+}
+
+/* INPUT FOCUS */
+.std-form input:focus {
+  border-color: #339af0;
+  box-shadow: 0 0 0 2px rgba(51, 154, 240, 0.15);
+}
+.marks-table td {
+  padding: 0.5rem;
+}
+.exam-selector{
+  display: flex;
+  gap: 1rem;
+}
+.exam-selector button{
+  padding: 0.5rem;
+  background-color: #339af0;
+  border: none;
+  border-radius: 1rem;
+  margin: 0.5rem;
+  color: white;
+}
+.badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.unit1 {
+  background: #d0ebff;
+  color: #1c7ed6;
+}
+
+.unit2 {
+  background: #d0ebff;
+  color: #1c7ed6;
+}
+
+.term1 {
+  background: #fff3bf;
+  color: #e67700;
+}
+
+.term2 {
+  background: #fff3bf;
+  color: #e67700;
 }
