@@ -42,7 +42,8 @@ a {
 
 .config-table,
 .std-table,
-.marks-table {
+.marks-table,
+.mark-table {
   width: 100%;
   border-collapse: collapse;
   background: white;
@@ -54,14 +55,6 @@ a {
   background: #f1f3f5;
 }
 
-.config-table th {
-  padding: 14px;
-  font-weight: 600;
-  color: #555;
-  text-align: left;
-  font-size: 14px;
-}
-
 .config-table thead tr:nth-child(2) th {
   font-size: 12px;
   color: #888;
@@ -69,7 +62,8 @@ a {
 
 .config-table th,
 .std-table th,
-.marks-table th {
+.marks-table th,
+.mark-table th {
   padding: 14px;
   font-weight: 600;
   color: #555;
@@ -78,7 +72,8 @@ a {
 }
 
 .config-table td,
-.std-table td {
+.std-table td,
+.mark-table td {
   padding: 14px;
   font-size: 14px;
   color: #333;
@@ -86,36 +81,46 @@ a {
 
 .config-table tbody tr,
 .std-table tbody tr,
-.marks-table tbody, tr {
+.marks-table tbody tr,
+.mark-table tbody tr {
   border-top: 1px solid #eee;
 }
 
 .config-table tbody tr:hover,
 .std-table tbody tr:hover,
-.marks-table tbody tr:hover{
+.marks-table tbody tr:hover,
+.mark-table tbody tr:hover{
   background: #f9fafb;
 }
 
 .config-table td:nth-child(2),
 .std-table td:nth-child(2),
-.marks-table td:nth-child(2) {
+.marks-table td:nth-child(2),
+.mark-table td:nth-child(2) {
   font-weight: 600;
 }
 
 .config-table th,
 .config-table td,
-.marks-table td {
+.marks-table td,
+.mark-table td {
   border: none;
 }
 
 .config-table thead tr:first-child th:nth-child(3),
-.config-table thead tr:first-child th:nth-child(4) {
+.mark-table thead tr:first-child th:nth-child(3),
+.config-table thead tr:first-child th:nth-child(4),
+.mark-table thead tr:first-child th:nth-child(4)
+ {
   background: #dbeafe;
   color: #1d4ed8;
 }
 
 .config-table thead tr:first-child th:nth-child(5),
-.config-table thead tr:first-child th:nth-child(6) {
+.mark-table thead tr:first-child th:nth-child(5),
+.config-table thead tr:first-child th:nth-child(6),
+.mark-table thead tr:first-child th:nth-child(6)
+ {
   background: #fef3c7;
   color: #d97706;
 }
@@ -330,4 +335,44 @@ a {
 .term2 {
   background: #fff3bf;
   color: #e67700;
+}
+.marksheet-container {
+  padding: 20px;
+}
+
+.marksheet-card {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  border: 2px solid #333;
+}
+
+.student-info {
+  display: flex;
+  justify-content: space-between;
+  background: #f1f3f5;
+  padding: 15px;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+.summary {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 30px;
+  text-align: center;
+}
+
+.pass {
+  color: green;
+  font-weight: bold;
+}
+
+.fail {
+  color: red;
+  font-weight: bold;
+}
+
+.grade {
+  color: #1c7ed6;
 }
