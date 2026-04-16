@@ -36,10 +36,9 @@ function Configuration() {
   ];
 
   useEffect(() => {
-    const savedData = localStorage.getItem("subjects");
-    if (savedData) {
-      setSubjects(JSON.parse(savedData));
-    }
+    fetch("http://localhost:5001/subjects")
+    .then(res => res.json())
+    .then(data => setSubjects(data))
 
     const savedGrades = localStorage.getItem("grades");
     if (savedGrades) {
@@ -50,43 +49,46 @@ function Configuration() {
     }
   }, []);
 
-  const handleAddSubject = () => {
+  const handleAddSubject = async () => {
     if (!subjectName) return;
 
-    const newSubject = {
-      name: subjectName,
-      unit1Max: u1Max,
-      unit1Pass: u1Pass,
-      unit2Max: u2Max,
-      unit2Pass: u2Pass,
-      term1Max: t1Max,
-      term1Pass: t1Pass,
-      term2Max: t2Max,
-      term2Pass: t2Pass,
-    };
+    await fetch("http://localhost:5001/subjects",
+      {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+        },
+        body: JSON.stringify({
+          name: subjectName,
+          unit1_max: u1Max,
+          unit1_pass: u1Pass,
+          unit2_max: u2Max,
+          unit2_pass: u2Pass,
+          term1_max: t1Max,
+          term1_pass: t1Pass,
+          term2_max: t2Max,
+          term2_pass: t2Pass
+        })
+      }
+    )
 
-    const updatedArray = [...subjects, newSubject];
-    setSubjects(updatedArray);
-
-    localStorage.setItem("subjects", JSON.stringify(updatedArray, null, 2));
+    fetch("http://localhost:5001/subjects")
+    .then(res => res.json())
+    .then(data => setSubjects(data))
 
     setSubjectName("");
-    setU1Max("");
-    setU1Pass("");
-    setU2Max("");
-    setU2Pass("");
-    setT1Max("");
-    setT1Pass("");
-    setT2Max("");
-    setT2Pass("");
+    close()
   };
 
-  const handleSubjectDelete = (indexToDelete) => {
-    const updatedSubjects = subjects.filter((_, index) => index !== indexToDelete)
+  const handleSubjectDelete = async (id) => {
+    await fetch(`http://localhost:5001/subjects/${id}`, {
+      method: "DELETE",
+    });
 
-    setSubjects(updatedSubjects)
-    localStorage.setItem("subjects", JSON.stringify(updatedSubjects))
-  }
+    fetch("http://localhost:5001/subjects")
+      .then(res => res.json())
+      .then(data => setSubjects(data));
+  };
 
   return (
     <div className="config-cointainer">
@@ -120,16 +122,16 @@ function Configuration() {
             <tr key={index}>
               <td>{index + 1}</td>
               <td>{sub.name}</td>
-              <td>{sub.unit1Max}</td>
-              <td>{sub.unit1Pass}</td>
-              <td>{sub.unit2Max}</td>
-              <td>{sub.unit2Pass}</td>
-              <td>{sub.term1Max}</td>
-              <td>{sub.term1Pass}</td>
-              <td>{sub.term2Max}</td>
-              <td>{sub.term2Pass}</td>
+              <td>{sub.unit1_max}</td>
+              <td>{sub.unit1_pass}</td>
+              <td>{sub.unit2_max}</td>
+              <td>{sub.unit2_pass}</td>
+              <td>{sub.term1_max}</td>
+              <td>{sub.term1_pass}</td>
+              <td>{sub.term2_max}</td>
+              <td>{sub.term2_pass}</td>
               <td>
-                <button onClick={() => handleSubjectDelete(index)}>Delete</button>
+                <button onClick={() => handleSubjectDelete(sub.id)}>Delete</button>
               </td>
             </tr>
           ))}

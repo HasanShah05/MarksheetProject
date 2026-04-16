@@ -7,14 +7,50 @@ function Consolidation() {
   const [marks, setMarks] = useState({});
 
   useEffect(() => {
-    const savedStudents = localStorage.getItem("students");
-    const savedSubjects = localStorage.getItem("subjects");
-    const savedMarks = localStorage.getItem("marks");
+  fetch("http://localhost:5001/students")
+    .then(res => res.json())
+    .then(studentsData => {
+      setStudents(studentsData);
 
-    if (savedStudents) setStudents(JSON.parse(savedStudents));
-    if (savedSubjects) setSubjects(JSON.parse(savedSubjects));
-    if (savedMarks) setMarks(JSON.parse(savedMarks));
-  }, []);
+      fetch("http://localhost:5001/subjects")
+        .then(res => res.json())
+        .then(subjectsData => {
+          setSubjects(subjectsData);
+
+          fetch("http://localhost:5001/marks")
+            .then(res => res.json())
+            .then(marksData => {
+
+              const formattedMarks = {
+                unit1: {},
+                unit2: {},
+                term1: {},
+                term2: {},
+              };
+
+              marksData.forEach((row) => {
+                const index = studentsData.findIndex(
+                  (s) => s.roll_no === row.roll_no
+                );
+
+                if (index === -1) return;
+
+                if (!formattedMarks.unit1[index]) formattedMarks.unit1[index] = {};
+                if (!formattedMarks.unit2[index]) formattedMarks.unit2[index] = {};
+                if (!formattedMarks.term1[index]) formattedMarks.term1[index] = {};
+                if (!formattedMarks.term2[index]) formattedMarks.term2[index] = {};
+
+                formattedMarks.unit1[index][row.subject] = row.unit1_marks;
+                formattedMarks.unit2[index][row.subject] = row.unit2_marks;
+                formattedMarks.term1[index][row.subject] = row.term1_marks;
+                formattedMarks.term2[index][row.subject] = row.term2_marks;
+              });
+
+              setMarks(formattedMarks);
+            });
+        });
+    });
+}, []);
 
   const getMark = (exam, studentIndex, subjectName) => {
     return marks?.[exam]?.[studentIndex]?.[subjectName] || 0;
@@ -60,7 +96,7 @@ function Consolidation() {
       {students.map((std, sIndex) => (
         <tbody key={sIndex}>
           <tr>
-            <td rowSpan="5">{sIndex + 1}</td>
+            <td rowSpan="5">{std.roll_no}</td>
             <td rowSpan="5">{std.name}</td>
             <td>Unit 1</td>
 

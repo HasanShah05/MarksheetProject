@@ -1,25 +1,49 @@
 import React from "react";
+import { SegmentedControl } from "@mantine/core";
 import { useState, useEffect } from "react";
-import { Modal, Button} from "@mantine/core";
-import { notifications } from '@mantine/notifications';
-
+import { Modal, Button } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 
 function EnterMarks() {
-  const [showAlert, setShowAlert] = useState(false)
-  const [students, setStuddents] = useState([]);
+  const [students, setStudents] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [marks, setMarks] = useState({});
   const [activeExam, setActiveExam] = useState("unit1");
 
-  useEffect(() => {
-    const savedStudents = localStorage.getItem("students");
-    const savedSubjects = localStorage.getItem("subjects");
-    const savedMarks = localStorage.getItem("marks");
 
-    if (savedStudents) setStuddents(JSON.parse(savedStudents));
-    if (savedSubjects) setSubjects(JSON.parse(savedSubjects));
-    if (savedMarks) setMarks(JSON.parse(savedMarks));
-  }, []);
+useEffect(() => {
+  fetch("http://localhost:5001/students")
+    .then(res => res.json())
+    .then(data => {
+      setStudents(data);
+    });
+
+  fetch("http://localhost:5001/subjects")
+    .then(res => res.json())
+    .then(data => {
+      setSubjects(data);
+    });
+
+  fetch(`http://localhost:5001/marks/${activeExam}`)
+    .then(res => res.json())
+    .then(data => {
+
+      const formatted = {};
+
+      data.forEach((row) => {
+        if (!formatted[row.roll_no]) {
+          formatted[row.roll_no] = {};
+        }
+
+        formatted[row.roll_no][row.name] = row[`${activeExam}_marks`];
+      });
+
+      setMarks({
+        [activeExam]: formatted
+      });
+    });
+
+}, [activeExam]);
 
   const handleMarkChange = (studentIndex, subjectName, value) => {
     const updatedMarks = { ...marks };
@@ -36,15 +60,15 @@ function EnterMarks() {
     setMarks(updatedMarks);
   };
 
-const handleSaveMarks = () => {
-  localStorage.setItem("marks", JSON.stringify(marks));
+  const handleSaveMarks = () => {
+    localStorage.setItem("marks", JSON.stringify(marks));
 
-  notifications.show({
-    title: "Marks Saved",
-    message: "All marks saved successfully",
-    color: "green",
-  });
-};
+    notifications.show({
+      title: "Marks Saved",
+      message: "All marks saved successfully",
+      color: "green",
+    });
+  };
 
   const getPassMarks = (subjects) => {
     if (activeExam === "unit1") return subjects.unit1Pass;
@@ -63,21 +87,28 @@ const handleSaveMarks = () => {
   return (
     <div className="marks-cointainer">
       <h2>Enter Marks</h2>
-
-      <div className="exam-selector">
-        <button onClick={() => setActiveExam("unit1")}>Unit 1</button>
-        <button onClick={() => setActiveExam("unit2")}>Unit 2</button>
-        <button onClick={() => setActiveExam("term1")}>term 1</button>
-        <button onClick={() => setActiveExam("term2")}>term 2</button>
-      </div>
-
+      <br />
+      <SegmentedControl
+      fullWidth
+      size="lg"
+      radius="xl"
+        value={activeExam}
+        onChange={setActiveExam}
+        data={[
+          { label: "Unit 1", value: "unit1" },
+          { label: "Unit 2", value: "unit2" },
+          { label: "Term 1", value: "term1" },
+          { label: "Term 2", value: "term2" },
+        ]}
+      />
+    <br />
       <div>
         Enter Marks for <b>{activeExam}</b>
       </div>
 
       <table className="marks-table">
         <thead>
-          <tr style={{backgroundColor:"lavender"}}>
+          <tr style={{ backgroundColor: "lavender" }}>
             <th>Roll No</th>
             <th>Student Name</th>
             {subjects.map((sub, i) => (
@@ -96,7 +127,7 @@ const handleSaveMarks = () => {
               <td>{std.name}</td>
 
               {subjects.map((sub, subIndex) => {
-                const value = marks?.[activeExam]?.[index]?.[sub.name] || "";
+                const value = marks?.[activeExam]?.[std.roll_no]?.[sub.name] || "";
 
                 const isFail = value !== "" && value < getPassMarks(sub);
 
@@ -125,7 +156,14 @@ const handleSaveMarks = () => {
 
       {/* Buttons */}
       <div style={{ marginTop: "20px" }}>
-        <Button variant="light" color="rgba(255, 239, 181, 1)" radius="xl" onClick={handleSaveMarks}>Save All Marks</Button>
+        <Button
+          variant="light"
+          color="rgba(255, 239, 181, 1)"
+          radius="xl"
+          onClick={handleSaveMarks}
+        >
+          Save All Marks
+        </Button>
       </div>
     </div>
   );

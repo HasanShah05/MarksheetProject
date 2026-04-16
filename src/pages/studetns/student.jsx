@@ -8,64 +8,44 @@ function Student() {
   const [studentName, setStudentName] = useState("");
   const [studentClass, setStudentClass] = useState("");
   const [opened, { open, close }] = useDisclosure(false);
-  const [editIndex, setEditIndex] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
 
-  useEffect(() => {
-    const savedStudents = localStorage.getItem("students");
+ useEffect(() => {
+  fetch("http://localhost:5001/students")
+  .then(res => res.json())
+  .then(data => setStudents(data))
+ }, [])
 
-    if (savedStudents) {
-      setStudents(JSON.parse(savedStudents));
-    }
-  }, []);
+  const handleAddStudent = async () => {
+    if(!studentClass || !studentName) return
 
-  const handleAddStudent = () => {
-  if (!studentName || !studentClass) return;
+    await fetch("http://localhost:5001/students", {
+      method:"POST",
+      headers:{
+        "Content-Type": "application/json"
+      },
+      body:JSON.stringify({
+        name: studentName,
+        class: studentClass
+      }),
+    })
 
-  const newStudent = {
-    name: studentName,
-    class: studentClass,
-  };
+    fetch("http://localhost:5001/students")
+    .then(res => res.json())
+    .then(data => setStudents(data))
 
-  let updatedStudents;
+    close()
 
-  if (isEditing) {
-    updatedStudents = [...students];
-    updatedStudents[editIndex] = newStudent;
-  } else {
-    updatedStudents = [...students, newStudent];
   }
 
-  setStudents(updatedStudents);
-  localStorage.setItem("students", JSON.stringify(updatedStudents));
+  const handlDeleteStudent = async (roll_no) => {
+    await fetch(`http://localhost:5001/students/${roll_no}`,{
+      method:"DELETE"
+    })
 
-  setStudentName("");
-  setStudentClass("");
-  setIsEditing(false);
-  setEditIndex(null);
-
-  close();
-};
-
-  const handleEditStudent = (index) => {
-    const student = students[index];
-
-    setStudentName(student.name);
-    setStudentClass(student.class);
-
-    setEditIndex(index);
-    setIsEditing(true);
-
-    open();
-  };
-
-  const handlDeleteStudent = (indexToDelete) => {
-    const updatedStudents = students.filter(
-      (_, index) => index !== indexToDelete,
-    );
-    setStudents(updatedStudents);
-    localStorage.setItem("students", JSON.stringify(updatedStudents));
-  };
+    fetch("http://localhost:5001/students")
+    .then(res => res.json())
+    .then(data => setStudents(data))
+  }
 
   return (
     <div className="student-cointainer">
@@ -86,10 +66,9 @@ function Student() {
               <td>{std.name}</td>
               <td>{std.class}</td>
               <td>
-                <button onClick={() => handlDeleteStudent(index)}>
+                <button onClick={() => handlDeleteStudent(std.roll_no)}>
                   Delete
-                </button>{" "}
-                /<button onClick={() => handleEditStudent(index)}>Edit</button>
+                </button>
               </td>
             </tr>
           ))}

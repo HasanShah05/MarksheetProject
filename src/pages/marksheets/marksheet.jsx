@@ -1,5 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
+import { Button } from "@mantine/core";
 
 function Marksheets() {
   const [students, setStudents] = useState([]);
@@ -10,15 +11,49 @@ function Marksheets() {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
-    const savedStudent = localStorage.getItem("students");
-    const savedSubjects = localStorage.getItem("subjects");
-    const savedMarks = localStorage.getItem("marks");
-    const savedGrades = localStorage.getItem("grades");
-
-    if (savedGrades) setGrades(JSON.parse(savedGrades));
-    if (savedMarks) setMarks(JSON.parse(savedMarks));
-    if (savedStudent) setStudents(JSON.parse(savedStudent));
-    if (savedSubjects) setSubjects(JSON.parse(savedSubjects));
+    fetch("http://localhost:5001/students")
+      .then(res => res.json())
+      .then(studentsData => {
+        setStudents(studentsData);
+  
+        fetch("http://localhost:5001/subjects")
+          .then(res => res.json())
+          .then(subjectsData => {
+            setSubjects(subjectsData);
+  
+            fetch("http://localhost:5001/marks")
+              .then(res => res.json())
+              .then(marksData => {
+  
+                const formattedMarks = {
+                  unit1: {},
+                  unit2: {},
+                  term1: {},
+                  term2: {},
+                };
+  
+                marksData.forEach((row) => {
+                  const index = studentsData.findIndex(
+                    (s) => s.roll_no === row.roll_no
+                  );
+  
+                  if (index === -1) return;
+  
+                  if (!formattedMarks.unit1[index]) formattedMarks.unit1[index] = {};
+                  if (!formattedMarks.unit2[index]) formattedMarks.unit2[index] = {};
+                  if (!formattedMarks.term1[index]) formattedMarks.term1[index] = {};
+                  if (!formattedMarks.term2[index]) formattedMarks.term2[index] = {};
+  
+                  formattedMarks.unit1[index][row.subject] = row.unit1_marks;
+                  formattedMarks.unit2[index][row.subject] = row.unit2_marks;
+                  formattedMarks.term1[index][row.subject] = row.term1_marks;
+                  formattedMarks.term2[index][row.subject] = row.term2_marks;
+                });
+  
+                setMarks(formattedMarks);
+              });
+          });
+      });
   }, []);
 
   const student = students[selectedIndex];
@@ -55,10 +90,10 @@ function Marksheets() {
     const t2 = getMarks("term2", sub.name);
 
     return (
-      u1 >= sub.unit1Pass &&
-      u2 >= sub.unit2Pass &&
-      t1 >= sub.term1Pass &&
-      t2 >= sub.term2Pass
+      u1 >= sub.unit1_pass &&
+      u2 >= sub.unit2_pass &&
+      t1 >= sub.term1_pass &&
+      t2 >= sub.term2_pass
     );
   };
 
@@ -99,6 +134,9 @@ function Marksheets() {
             </option>
           ))}
         </select>
+        <Button variant="filled" color="blue" radius="md" onClick={window.print}>
+          Print Marksheet
+        </Button>
       </div>
       <br />
       <div className="marksheet-card">
