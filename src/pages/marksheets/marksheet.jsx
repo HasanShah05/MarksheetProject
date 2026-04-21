@@ -11,6 +11,9 @@ function Marksheets() {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
+    const savedGrades = localStorage.getItem("grades")
+    if(savedGrades) setGrades(JSON.stringify(savedGrades))
+
     fetch("http://localhost:5001/students")
       .then(res => res.json())
       .then(studentsData => {
